@@ -1,0 +1,5 @@
+{
+  "name": "SkyScan AI",
+  "description": "An advanced AI platform for analyzing drone footage, providing insights for vessel inspections, port reclamation monitoring, worksite safety, and environmental analysis. It leverages AI to generate automated reports, track metrics, and identify key events from video data.",
+  "requestFramePermissions": []
+}
