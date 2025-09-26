@@ -1,6 +1,5 @@
-
 import React, { useState, useCallback, useEffect } from 'react';
-import type { Scenario } from '../types';
+import type { Scenario, AnalysisResult } from '../types';
 import VideoUpload from './VideoUpload';
 import AnalysisResults from './AnalysisResults';
 import { ReportGenerator } from './ReportGenerator';
@@ -14,7 +13,7 @@ const Dashboard: React.FC<DashboardProps> = ({ scenario }) => {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisReport, setAnalysisReport] = useState<string | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -28,7 +27,7 @@ const Dashboard: React.FC<DashboardProps> = ({ scenario }) => {
 
   const handleFileSelect = (file: File | null) => {
     setVideoFile(file);
-    setAnalysisReport(null);
+    setAnalysisResult(null);
     setError(null);
     if (videoUrl) {
       URL.revokeObjectURL(videoUrl);
@@ -43,12 +42,12 @@ const Dashboard: React.FC<DashboardProps> = ({ scenario }) => {
     if (!videoFile) return;
 
     setIsAnalyzing(true);
-    setAnalysisReport(null);
+    setAnalysisResult(null);
     setError(null);
     
     try {
-      const report = await generateAnalysisReport(scenario.prompt, videoFile.name);
-      setAnalysisReport(report);
+      const result = await generateAnalysisReport(scenario.prompt, videoFile.name);
+      setAnalysisResult(result);
     } catch (err) {
       setError('Failed to generate report. Please check your API key and try again.');
       console.error(err);
@@ -72,15 +71,16 @@ const Dashboard: React.FC<DashboardProps> = ({ scenario }) => {
             isAnalyzing={isAnalyzing} 
             videoFile={videoFile}
             videoUrl={videoUrl}
+            analysisResult={analysisResult}
           />
           <ReportGenerator 
             isLoading={isAnalyzing}
-            report={analysisReport}
+            report={analysisResult?.report ?? null}
             error={error}
           />
         </div>
         <div className="lg:col-span-2">
-            <AnalysisResults scenario={scenario} />
+            <AnalysisResults scenario={scenario} analysisResult={analysisResult} />
         </div>
       </div>
     </div>

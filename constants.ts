@@ -1,124 +1,147 @@
-
 import type { Scenario } from './types';
-import { ShipIcon, HardHatIcon, WindIcon, BoxIcon } from './components/IconComponents';
+import { PollutionIcon, FlotsamIcon, LifeVestIcon, BuoyIcon, IllegalIcon, ARIcon } from './components/IconComponents';
 
 export const SCENARIOS: Scenario[] = [
   {
-    id: 'vessel-inspection',
-    name: 'Vessel Inspection',
-    description: 'Analyze drone footage for hull corrosion, structural integrity, and equipment status.',
-    icon: ShipIcon,
+    id: 'pollution-monitoring',
+    name: 'Pollution Monitoring',
+    description: 'Detect and analyze black smoke emissions from vessels and potential oil spills on the water surface.',
+    icon: PollutionIcon,
     prompt: `
-      You are SkyScan AI, an advanced drone footage analysis system.
-      Based on the uploaded video for a "Vessel Inspection" scenario, generate a detailed inspection report.
-      The report should include:
-      1. A concise summary of the vessel's condition.
-      2. A list of key findings (e.g., corrosion, fouling, structural anomalies) with mock timestamps.
-      3. A set of actionable recommendations (e.g., "Recommend cleaning and re-inspection within 3 months.").
-      Format the output as clear, human-readable text.
+      You are SkyScan AI, a maritime drone footage analysis system.
+      Based on the uploaded video for a "Pollution Monitoring" scenario, generate a detailed report, key metrics, and a list of timestamped events.
+      Identify any vessels emitting excessive black smoke or any visual evidence of oil spills.
+      For each detection, provide a bounding box.
     `,
     mockData: {
       metrics: [
-        { name: 'Corrosion', value: 28 },
-        { name: 'Fouling', value: 45 },
-        { name: 'Structural Anomaly', value: 5 },
-        { name: 'Overall Integrity', value: 85 },
+        { name: 'Air Quality Impact', value: 78 },
+        { name: 'Water Contamination', value: 45 },
+        { name: 'Vessels Monitored', value: 12 },
       ],
       events: [
-        { time: '01:12', description: 'Minor corrosion detected on starboard bow.', type: 'info' },
-        { time: '03:45', description: 'Moderate fouling observed on port hull.', type: 'warning' },
-        { time: '07:21', description: 'Potential stress fracture near Frame 150.', type: 'alert' },
-        { time: '10:05', description: 'Propeller appears to be in good condition.', type: 'info' },
+        { time: '01:30', description: 'Vessel (IMO 9876543) emitting dense black smoke.', type: 'alert', box: { x: 0.25, y: 0.3, width: 0.15, height: 0.2 } },
+        { time: '04:55', description: 'Iridescent sheen on water surface, potential oil spill.', type: 'warning', box: { x: 0.5, y: 0.6, width: 0.25, height: 0.15 } },
+        { time: '08:10', description: 'Vessel (IMO 1234567) operating with normal emissions.', type: 'info' },
       ],
     },
   },
   {
-    id: 'worksite-inspection',
-    name: 'Worksite Inspection',
-    description: 'Monitor worksites for safety compliance, PPE usage, and operational efficiency.',
-    icon: HardHatIcon,
+    id: 'flotsam-detection',
+    name: 'Flotsam Detection',
+    description: 'Identify and map floating debris and hazards to navigation in fairways and anchorages.',
+    icon: FlotsamIcon,
     prompt: `
-      You are SkyScan AI, an advanced drone footage analysis system.
-      Based on the uploaded video for a "Worksite Inspection" scenario (e.g., Tuas Port reclamation), generate a detailed safety and progress report.
-      The report should include:
-      1. An overall safety compliance summary.
-      2. A list of observed events, noting any PPE violations or hazardous conditions with mock timestamps.
-      3. An assessment of work progress (e.g., material movement, land settling).
-      4. Recommendations for improving safety and efficiency.
-      Format the output as clear, human-readable text.
+      You are SkyScan AI, a maritime drone footage analysis system.
+      For this "Flotsam Detection" scenario, analyze the video to identify floating debris such as logs, containers, or other navigational hazards.
+      Generate a report, relevant metrics, and a list of events with bounding boxes for each detected piece of flotsam.
     `,
     mockData: {
       metrics: [
-        { name: 'PPE Compliance', value: 92 },
-        { name: 'Hazard Zones', value: 3 },
-        { name: 'Equipment Utilization', value: 78 },
-        { name: 'Progress vs. Plan', value: 95 },
+        { name: 'Fairway Clearance', value: 85 },
+        { name: 'Debris Count', value: 8 },
+        { name: 'High-Risk Items', value: 1 },
       ],
       events: [
-        { time: '02:30', description: 'Worker in Sector B without a hard hat.', type: 'alert' },
-        { time: '05:15', description: 'Excavator activity detected in Zone 3.', type: 'info' },
-        { time: '06:40', description: 'Safety cone barrier appears to be moved.', type: 'warning' },
-        { time: '11:20', description: 'New fill material observed in Zone 4.', type: 'info' },
+        { time: '02:15', description: 'Large wooden log detected.', type: 'warning', box: { x: 0.6, y: 0.5, width: 0.2, height: 0.05 } },
+        { time: '06:40', description: 'Cluster of small plastic debris.', type: 'info', box: { x: 0.3, y: 0.7, width: 0.1, height: 0.1 } },
+        { time: '10:05', description: 'Partially submerged container.', type: 'alert', box: { x: 0.1, y: 0.2, width: 0.15, height: 0.15 } },
       ],
     },
   },
   {
-    id: 'environmental-monitoring',
-    name: 'Environmental Monitoring',
-    description: 'Track emission plumes, water quality, and changes in the local ecosystem.',
-    icon: WindIcon,
+    id: 'sea-sports-safety',
+    name: 'Sea Sports Safety',
+    description: 'Monitor sea sports activities for safety compliance, focusing on life vest usage and safe distances.',
+    icon: LifeVestIcon,
     prompt: `
-      You are SkyScan AI, an advanced drone footage analysis system.
-      Based on the uploaded video for an "Environmental Monitoring" scenario, generate a detailed environmental impact report.
-      The report should include:
-      1. A summary of environmental observations.
-      2. Detection of any emission plumes, specifying their duration and potential source with mock timestamps.
-      3. Analysis of water surface for any signs of pollution or thermal anomalies.
-      4. Recommendations for further investigation or mitigation actions.
-      Format the output as clear, human-readable text.
+      You are SkyScan AI, a maritime drone footage analysis system.
+      In this "Sea Sports Safety" scenario, monitor participants in activities like kayaking or paddleboarding.
+      Your analysis should verify if individuals are wearing life vests and maintain safe operating procedures.
+      Generate a report, compliance metrics, and an event log. Provide bounding boxes for individuals without life vests.
     `,
     mockData: {
       metrics: [
-        { name: 'Air Quality Index', value: 65 },
-        { name: 'Water Turbidity', value: 30 },
-        { name: 'Thermal Anomaly', value: 12 },
-        { name: 'Vegetation Health', value: 88 },
+        { name: 'Life Vest Compliance', value: 75 },
+        { name: 'Participants Counted', value: 16 },
+        { name: 'Safety Incidents', value: 2 },
       ],
       events: [
-        { time: '00:55', description: 'Emission plume detected from stack A.', type: 'warning' },
-        { time: '04:18', description: 'Plume lasted for over 2 minutes.', type: 'alert' },
-        { time: '08:02', description: 'Slight discoloration noted in water outflow channel.', type: 'warning' },
-        { time: '12:45', description: 'No significant changes in shoreline vegetation.', type: 'info' },
+        { time: '03:20', description: 'Kayaker without a visible life vest.', type: 'alert', box: { x: 0.45, y: 0.55, width: 0.08, height: 0.12 } },
+        { time: '07:00', description: 'Group of paddleboarders operating safely.', type: 'info' },
+        { time: '09:45', description: 'Jet ski operating too close to swimmers.', type: 'warning' },
       ],
     },
   },
-    {
-    id: 'parcel-delivery',
-    name: 'Drone Parcel Delivery',
-    description: 'Monitor drone delivery routes for obstacles, safety, and delivery confirmation.',
-    icon: BoxIcon,
+  {
+    id: 'infrastructure-inspection',
+    name: 'Infrastructure Inspection',
+    description: 'Inspect aids-to-navigation (AToN), mooring buoys, and other fixed maritime infrastructure for damage or defects.',
+    icon: BuoyIcon,
     prompt: `
-      You are SkyScan AI, an advanced drone footage analysis system.
-      Based on the uploaded video for a "Drone Parcel Delivery" scenario, generate a flight and delivery log.
-      The report should include:
-      1. A summary of the flight from takeoff to landing.
-      2. A log of any detected obstacles or deviations from the planned flight path, with mock timestamps.
-      3. Confirmation of package delivery at the target location.
-      4. Any safety or efficiency recommendations for future flights.
-      Format the output as clear, human-readable text.
+      You are SkyScan AI, an infrastructure analysis system.
+      For this "Infrastructure Inspection" scenario, analyze the footage of aids-to-navigation (e.g., buoys).
+      Identify any structural damage, corrosion, or malfunctioning lights.
+      Generate a detailed inspection report, condition metrics, and an event log with bounding boxes for any anomalies found.
     `,
     mockData: {
       metrics: [
-        { name: 'Path Adherence', value: 99 },
-        { name: 'Obstacles Detected', value: 1 },
-        { name: 'Delivery Success', value: 100 },
-        { name: 'Flight Efficiency', value: 97 },
+        { name: 'Structural Integrity', value: 92 },
+        { name: 'Corrosion Level', value: 15 },
+        { name: 'AToN Inspected', value: 5 },
       ],
       events: [
-        { time: '00:00', description: 'Drone takeoff initiated.', type: 'info' },
-        { time: '02:10', description: 'Flight path deviation to avoid flock of birds.', type: 'warning' },
-        { time: '04:35', description: 'Package successfully delivered to coordinates.', type: 'info' },
-        { time: '05:50', description: 'Drone returned to base and landed.', type: 'info' },
+        { time: '01:50', description: 'Minor corrosion on buoy #A3.', type: 'warning', box: { x: 0.5, y: 0.4, width: 0.1, height: 0.15 } },
+        { time: '05:25', description: 'Buoy #A4 light appears functional.', type: 'info' },
+        { time: '11:10', description: 'Significant marine growth on buoy #A5.', type: 'info', box: { x: 0.3, y: 0.6, width: 0.12, height: 0.1 } },
+      ],
+    },
+  },
+  {
+    id: 'illegal-activity',
+    name: 'Illegal Activity Detection',
+    description: 'Detect unauthorized activities like illegal fishing, anchoring in restricted zones, or obstructing fairways.',
+    icon: IllegalIcon,
+    prompt: `
+      You are SkyScan AI, a maritime security system.
+      In this "Illegal Activity Detection" scenario, analyze the video for activities such as fishing in no-fishing zones or anchoring in fairways.
+      Generate a security report, relevant metrics, and an event log, providing bounding boxes for vessels or persons of interest.
+    `,
+    mockData: {
+      metrics: [
+        { name: 'Compliance Score', value: 80 },
+        { name: 'Anomalous Activities', value: 2 },
+        { name: 'Vessels Tracked', value: 7 },
+      ],
+      events: [
+        { time: '04:05', description: 'Vessel anchored in a restricted fairway.', type: 'alert', box: { x: 0.15, y: 0.25, width: 0.2, height: 0.15 } },
+        { time: '08:50', description: 'Evidence of illegal net fishing from a small craft.', type: 'warning', box: { x: 0.7, y: 0.6, width: 0.15, height: 0.1 } },
+        { time: '12:30', description: 'Ferry operating normally on its route.', type: 'info' },
+      ],
+    },
+  },
+  {
+    id: 'ar-overlay',
+    name: 'AR Vessel Data Overlay',
+    description: 'Simulate an augmented reality overlay of vessel data (like AIS) over the live video stream.',
+    icon: ARIcon,
+    prompt: `
+      You are SkyScan AI, a maritime data fusion system.
+      For this "AR Overlay" scenario, identify all vessels in the video.
+      For each vessel, generate mock AIS data (IMO number, name, speed, heading) and a bounding box.
+      The report should summarize the traffic, with metrics on vessel count and types.
+    `,
+    mockData: {
+      metrics: [
+        { name: 'Vessels Identified', value: 4 },
+        { name: 'Tankers', value: 1 },
+        { name: 'Cargo Ships', value: 2 },
+        { name: 'Tugboats', value: 1 },
+      ],
+      events: [
+        { time: '00:30', description: 'Tanker "Neptune" | 12.5kn', type: 'info', box: { x: 0.1, y: 0.2, width: 0.3, height: 0.2 } },
+        { time: '00:32', description: 'Cargo "Orion" | 8.2kn', type: 'info', box: { x: 0.5, y: 0.4, width: 0.4, height: 0.25 } },
+        { time: '00:35', description: 'Tug "Titan" | 5.0kn', type: 'info', box: { x: 0.4, y: 0.3, width: 0.1, height: 0.08 } },
       ],
     },
   },

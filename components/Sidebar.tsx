@@ -1,4 +1,3 @@
-
 import React from 'react';
 import type { Scenario } from '../types';
 import { LogoIcon } from './IconComponents';
@@ -11,7 +10,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ scenarios, selectedScenario, setSelectedScenario }) => {
   return (
-    <aside className="hidden md:flex flex-col w-64 bg-brand-secondary border-r border-brand-border">
+    <aside className="hidden md:flex flex-col w-72 bg-brand-secondary border-r border-brand-border">
       <div className="flex items-center justify-center h-20 border-b border-brand-border">
         <LogoIcon className="h-8 w-8 text-brand-accent" />
         <h1 className="text-xl font-bold ml-3 text-brand-text-primary">SkyScan AI</h1>
@@ -27,7 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ scenarios, selectedScenario, setSelec
                 : 'text-brand-text-secondary hover:bg-brand-border hover:text-brand-text-primary'
             }`}
           >
-            <scenario.icon className="h-5 w-5 mr-3" />
+            <scenario.icon className="h-5 w-5 mr-3 flex-shrink-0" />
             <span>{scenario.name}</span>
           </button>
         ))}

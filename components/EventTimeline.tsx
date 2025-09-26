@@ -1,15 +1,10 @@
-
 import React from 'react';
 import { InfoIcon, WarningIcon, AlertIcon } from './IconComponents';
+import type { DetectionEvent } from '../types';
 
-interface Event {
-  time: string;
-  description: string;
-  type: 'info' | 'warning' | 'alert';
-}
 
 interface EventTimelineProps {
-  events: Event[];
+  events: DetectionEvent[];
 }
 
 const eventTypeStyles = {

@@ -1,20 +1,23 @@
-
 import React from 'react';
-import type { Scenario } from '../types';
+import type { Scenario, AnalysisResult } from '../types';
 import MetricsChart from './MetricsChart';
 import EventTimeline from './EventTimeline';
 import { MapPinIcon } from './IconComponents';
 
 interface AnalysisResultsProps {
   scenario: Scenario;
+  analysisResult: AnalysisResult | null;
 }
 
-const AnalysisResults: React.FC<AnalysisResultsProps> = ({ scenario }) => {
+const AnalysisResults: React.FC<AnalysisResultsProps> = ({ scenario, analysisResult }) => {
+  const metrics = analysisResult?.metrics ?? scenario.mockData.metrics;
+  const events = analysisResult?.events ?? scenario.mockData.events;
+
   return (
     <div className="space-y-6">
       <div className="bg-brand-secondary rounded-xl border border-brand-border p-6 shadow-lg">
         <h3 className="text-lg font-semibold text-brand-text-primary mb-4">Key Metrics</h3>
-        <MetricsChart data={scenario.mockData.metrics} />
+        <MetricsChart data={metrics} />
       </div>
 
       <div className="bg-brand-secondary rounded-xl border border-brand-border p-6 shadow-lg">
@@ -30,7 +33,7 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ scenario }) => {
       
        <div className="bg-brand-secondary rounded-xl border border-brand-border p-6 shadow-lg">
         <h3 className="text-lg font-semibold text-brand-text-primary mb-4">Event Timeline</h3>
-        <EventTimeline events={scenario.mockData.events} />
+        <EventTimeline events={events} />
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
-
 import React, { useRef } from 'react';
 import { UploadIcon, PlayIcon, AnalyzeIcon, LoadingIcon } from './IconComponents';
+import type { AnalysisResult } from '../types';
+
 
 interface VideoUploadProps {
   onFileSelect: (file: File | null) => void;
@@ -8,9 +9,10 @@ interface VideoUploadProps {
   isAnalyzing: boolean;
   videoFile: File | null;
   videoUrl: string | null;
+  analysisResult: AnalysisResult | null;
 }
 
-const VideoUpload: React.FC<VideoUploadProps> = ({ onFileSelect, onAnalyze, isAnalyzing, videoFile, videoUrl }) => {
+const VideoUpload: React.FC<VideoUploadProps> = ({ onFileSelect, onAnalyze, isAnalyzing, videoFile, videoUrl, analysisResult }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,14 +26,54 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onFileSelect, onAnalyze, isAn
 
   return (
     <div className="bg-brand-secondary rounded-xl border border-brand-border p-6 shadow-lg">
-       <div className="aspect-video bg-brand-primary rounded-lg mb-4 border border-brand-border flex items-center justify-center overflow-hidden">
+       <div className="relative aspect-video bg-brand-primary rounded-lg mb-4 border border-brand-border flex items-center justify-center overflow-hidden">
         {videoUrl ? (
-          <video src={videoUrl} controls className="w-full h-full object-cover"></video>
+          <video src={videoUrl} controls className="w-full h-full object-contain"></video>
         ) : (
           <div className="text-center text-brand-text-secondary">
             <PlayIcon className="h-16 w-16 mx-auto" />
             <p className="mt-2">Video preview will appear here</p>
           </div>
+        )}
+        {analysisResult && (
+            <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+              {analysisResult.events.filter(e => e.box).map((event, index) => {
+                const box = event.box!;
+                const boxColor = event.type === 'alert' ? '#EF4444' : event.type === 'warning' ? '#F59E0B' : '#3B82F6';
+                
+                const style: React.CSSProperties = {
+                  position: 'absolute',
+                  left: `${box.x * 100}%`,
+                  top: `${box.y * 100}%`,
+                  width: `${box.width * 100}%`,
+                  height: `${box.height * 100}%`,
+                  border: `2px solid ${boxColor}`,
+                  borderRadius: '4px',
+                  boxShadow: `0 0 8px ${boxColor}aa`,
+                };
+                
+                const labelStyle: React.CSSProperties = {
+                    position: 'absolute',
+                    top: 0,
+                    left: '-2px',
+                    transform: 'translateY(-100%)',
+                    backgroundColor: boxColor,
+                    color: '#ffffff',
+                    padding: '2px 6px',
+                    fontSize: '10px',
+                    fontWeight: '600',
+                    borderRadius: '4px 4px 0 0',
+                    whiteSpace: 'nowrap',
+                    textShadow: '1px 1px 1px #00000088'
+                };
+
+                return (
+                  <div key={index} style={style}>
+                    <span style={labelStyle}>{event.description}</span>
+                  </div>
+                );
+              })}
+            </div>
         )}
       </div>
 
