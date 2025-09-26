@@ -8,7 +8,7 @@ const getAiClient = (): GoogleGenAI => {
     return ai;
   }
 
-  const API_KEY = process.env.API_KEY;
+  const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
   if (!API_KEY) {
     const errorMessage =
       "Gemini API key is missing. This application requires an environment variable named 'API_KEY'. " +
