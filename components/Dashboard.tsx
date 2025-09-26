@@ -49,7 +49,11 @@ const Dashboard: React.FC<DashboardProps> = ({ scenario }) => {
       const result = await generateAnalysisReport(scenario.prompt, videoFile.name);
       setAnalysisResult(result);
     } catch (err) {
-      setError('Failed to generate report. Please check your API key and try again.');
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
       console.error(err);
     } finally {
       setIsAnalyzing(false);

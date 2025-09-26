@@ -1,16 +1,23 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { AnalysisResult } from '../types';
 
-// Ensure the API_KEY is available in the environment variables.
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+let ai: GoogleGenAI | null = null;
 
-if (!API_KEY) {
-  // In a real app, you might want to handle this more gracefully.
-  // For this project, we assume the key is set.
-  console.warn("API_KEY for Gemini is not set in environment variables. API calls will fail.");
-}
+const getAiClient = (): GoogleGenAI => {
+  if (ai) {
+    return ai;
+  }
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+  const API_KEY = process.env.API_KEY;
+  if (!API_KEY) {
+    // This error will be caught by the UI and displayed to the user.
+    throw new Error("Gemini API key is missing. Please ensure the API_KEY environment variable is set on your deployment platform (e.g., Railway).");
+  }
+
+  ai = new GoogleGenAI({ apiKey: API_KEY });
+  return ai;
+};
+
 
 const responseSchema = {
     type: Type.OBJECT,
@@ -68,9 +75,10 @@ export const generateAnalysisReport = async (
   videoFileName: string
 ): Promise<AnalysisResult> => {
   try {
+    const client = getAiClient();
     const fullPrompt = `${promptTemplate}\n\nThe video file being analyzed is named: "${videoFileName}".`;
     
-    const response = await ai.models.generateContent({
+    const response = await client.models.generateContent({
         model: 'gemini-2.5-flash',
         contents: fullPrompt,
         config: {
@@ -80,12 +88,18 @@ export const generateAnalysisReport = async (
     });
 
     const jsonText = response.text;
+    if (!jsonText) {
+        throw new Error("Received an empty response from the API. The model may not have been able to process the request.");
+    }
     const result: AnalysisResult = JSON.parse(jsonText);
     return result;
 
   } catch (error) {
     console.error("Error generating content with Gemini API:", error);
     // Re-throw the error to be handled by the calling function.
-    throw new Error("Failed to communicate with the Gemini API or parse its response.");
+    if (error instanceof Error) {
+        throw error;
+    }
+    throw new Error("An unknown error occurred while communicating with the Gemini API.");
   }
 };
