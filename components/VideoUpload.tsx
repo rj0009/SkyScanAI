@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+
+import React, { useRef, useState, useEffect } from 'react';
 import { UploadIcon, PlayIcon, AnalyzeIcon, LoadingIcon } from './IconComponents';
 import type { AnalysisResult } from '../types';
 
@@ -14,6 +15,12 @@ interface VideoUploadProps {
 
 const VideoUpload: React.FC<VideoUploadProps> = ({ onFileSelect, onAnalyze, isAnalyzing, videoFile, videoUrl, analysisResult }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [currentTime, setCurrentTime] = useState(0);
+
+  useEffect(() => {
+    setCurrentTime(0);
+  }, [videoUrl]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
@@ -24,11 +31,35 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onFileSelect, onAnalyze, isAn
     fileInputRef.current?.click();
   };
 
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      setCurrentTime(videoRef.current.currentTime);
+    }
+  };
+
+  const timeToSeconds = (timeStr: string): number => {
+    if (!timeStr || !timeStr.includes(':')) return -1;
+    const parts = timeStr.split(':');
+    if (parts.length !== 2) return -1;
+    const minutes = parseInt(parts[0], 10);
+    const seconds = parseInt(parts[1], 10);
+    if (isNaN(minutes) || isNaN(seconds)) return -1;
+    return minutes * 60 + seconds;
+  };
+
+
   return (
     <div className="bg-brand-secondary rounded-xl border border-brand-border p-6 shadow-lg">
        <div className="relative aspect-video bg-brand-primary rounded-lg mb-4 border border-brand-border flex items-center justify-center overflow-hidden">
         {videoUrl ? (
-          <video src={videoUrl} controls className="w-full h-full object-contain"></video>
+          <video 
+            ref={videoRef}
+            src={videoUrl} 
+            controls 
+            className="w-full h-full object-contain"
+            onTimeUpdate={handleTimeUpdate}
+            >
+          </video>
         ) : (
           <div className="text-center text-brand-text-secondary">
             <PlayIcon className="h-16 w-16 mx-auto" />
@@ -38,6 +69,14 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onFileSelect, onAnalyze, isAn
         {analysisResult && (
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
               {analysisResult.events.filter(e => e.box).map((event, index) => {
+                const eventTimeInSeconds = timeToSeconds(event.time);
+                // Show the box for 3 seconds starting from the event time
+                const isVisible = eventTimeInSeconds !== -1 && currentTime >= eventTimeInSeconds && currentTime < eventTimeInSeconds + 3;
+
+                if (!isVisible) {
+                    return null;
+                }
+
                 const box = event.box!;
                 const boxColor = event.type === 'alert' ? '#EF4444' : event.type === 'warning' ? '#F59E0B' : '#3B82F6';
                 

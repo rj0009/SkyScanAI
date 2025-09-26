@@ -8,10 +8,13 @@ const getAiClient = (): GoogleGenAI => {
     return ai;
   }
 
-  const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+  const API_KEY = process.env.API_KEY;
   if (!API_KEY) {
-    // This error will be caught by the UI and displayed to the user.
-    throw new Error("Gemini API key is missing. Please ensure the API_KEY environment variable is set on your deployment platform (e.g., Railway).");
+    const errorMessage =
+      "Gemini API key is missing. This application requires an environment variable named 'API_KEY'. " +
+      "Please ensure it is set in your deployment environment (e.g., Railway). " +
+      "For local development, your development server must be configured to expose this variable as `process.env.API_KEY`.";
+    throw new Error(errorMessage);
   }
 
   ai = new GoogleGenAI({ apiKey: API_KEY });
