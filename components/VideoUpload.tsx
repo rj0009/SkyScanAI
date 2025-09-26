@@ -20,6 +20,10 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onFileSelect, onAnalyze, isAn
 
   useEffect(() => {
     setCurrentTime(0);
+    // When a new video is loaded, reset its time
+    if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+    }
   }, [videoUrl]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,6 +93,8 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onFileSelect, onAnalyze, isAn
                   border: `2px solid ${boxColor}`,
                   borderRadius: '4px',
                   boxShadow: `0 0 8px ${boxColor}aa`,
+                  transition: 'opacity 0.2s ease-in-out',
+                  opacity: isVisible ? 1 : 0,
                 };
                 
                 const labelStyle: React.CSSProperties = {
